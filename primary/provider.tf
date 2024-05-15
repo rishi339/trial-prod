@@ -1,9 +1,9 @@
 terraform {
-experiments = [module_variable_optional_attrs]
   required_providers {
     oci = {
       source  = "oracle/oci"
       version = "5.41.0"
+      experiments = [module_variable_optional_attrs]
     }
   }
 }
