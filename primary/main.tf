@@ -1,6 +1,6 @@
 ##################################### TAG NAMESPACE #####################################
 module "tag_namespace" {
-  source         = "/landing_zone/primary/tag/tag_namespace"
+  source         = "../tag/tag_namespace"
   for_each       = var.tag_namespace_configurations
   tenancy_ocid   = var.tenancy_ocid
   namespace_name = each.value.namespace_name
@@ -8,7 +8,7 @@ module "tag_namespace" {
 
 ####################################### TAG #############################################
 module "tag" {
-  source           = "/landing_zone/primary/tag"
+  source           = "../tag"
   for_each         = var.tag_configurations
   name             = each.value.name
   tag_namespace_id = module.tag_namespace[each.value.tag_namespace_key].tag_namespace_id
@@ -17,14 +17,14 @@ module "tag" {
 
 ####################################### COMPARTMENT #######################################
 module "compartment" {
-  source                     = "/landing_zone/primary/compartment"
+  source                     = "../compartment"
   compartments_configuration = var.compartments_configuration
   tenancy_ocid               = var.tenancy_ocid
 }
 
 ########################################## VCN ##########################################
 module "vcn" {
-  source         = "/landing_zone/primary/vcn"
+  source         = "../vcn"
   for_each       = var.vcn_configurations
   cidr_block     = each.value.cidr_block
   display_name   = each.value.display_name
@@ -35,7 +35,7 @@ module "vcn" {
 ########################################## BASTION ##########################################
 module "bastion" {
   #  region           = each.value.region
-  source                               = "/landing_zone/primary/bastion"
+  source                               = "../bastion"
   for_each                             = var.bastion_configurations
   compartment_id                       = lookup(module.compartment.compartments, each.value.compartment_key).id
   target_subnet_id                     = module.subnet[each.value.target_subnet_key].target_subnet_id
@@ -48,7 +48,7 @@ module "bastion" {
 
 ########################################## SUBNET ##########################################
 module "subnet" {
-  source            = "/landing_zone/primary/subnet"
+  source            = "../subnet"
   for_each          = var.subnet_configurations
   compartment_id    = lookup(module.compartment.compartments, each.value.compartment_key).id
   vcn_id            = module.vcn[each.value.vcn_key].vcn_id
@@ -61,7 +61,7 @@ module "subnet" {
 
 ########################################## BUCKET ##########################################
 module "bucket" {
-  source              = "/landing_zone/primary/buckets"
+  source              = "../buckets"
   for_each            = var.bucket_configurations
   compartment_id      = lookup(module.compartment.compartments, each.value.compartment_key).id
   bucket_name         = each.value.bucket_name
@@ -72,7 +72,7 @@ module "bucket" {
 
 ########################################## TOPICS ##########################################
 module "topic" {
-  source                         = "/landing_zone/primary/topic"
+  source                         = "../topic"
   for_each                       = var.topic_configurations
   compartment_id                 = lookup(module.compartment.compartments, each.value.compartment_key).id
   notification_topic_name        = each.value.notification_topic_name
@@ -82,7 +82,7 @@ module "topic" {
 
 ########################################## SERVICE GATEWAY ##########################################
 module "service_gateway" {
-  source                       = "/landing_zone/primary/service_gateway"
+  source                       = "../service_gateway"
   for_each                     = var.service_gateway_configurations
   compartment_id               = lookup(module.compartment.compartments, each.value.compartment_key).id
   vcn_id                       = module.vcn[each.value.vcn_key].vcn_id
@@ -92,7 +92,7 @@ module "service_gateway" {
 
 ########################################## INTERNET GATEWAY ##########################################
 module "internet_gateway" {
-  source                        = "/landing_zone/primary/internet_gateway"
+  source                        = "../internet_gateway"
   for_each                      = var.internet_gateway_configurations
   compartment_id                = lookup(module.compartment.compartments, each.value.compartment_key).id
   vcn_id                        = module.vcn[each.value.vcn_key].vcn_id
@@ -103,7 +103,7 @@ module "internet_gateway" {
 
 ########################################## NAT GATEWAY ##########################################
 module "nat_gateway" {
-  source                   = "/landing_zone/primary/nat_gateway"
+  source                   = "../nat_gateway"
   for_each                 = var.nat_gateway_configurations
   compartment_id           = lookup(module.compartment.compartments, each.value.compartment_key).id
   vcn_id                   = module.vcn[each.value.vcn_key].vcn_id
@@ -113,7 +113,7 @@ module "nat_gateway" {
 
 ########################################## SECURITY LISTS ##########################################
 module "security_list" {
-  source                     = "/landing_zone/primary/security_list"
+  source                     = "../security_list"
   for_each                   = var.security_list_configurations
   compartment_id             = lookup(module.compartment.compartments, each.value.compartment_key).id
   vcn_id                     = module.vcn[each.value.vcn_key].vcn_id
@@ -123,7 +123,7 @@ module "security_list" {
 
 ########################################## ROUTE TABLE ##########################################
 module "route_table" {
-  source                   = "/landing_zone/primary/route_table"
+  source                   = "../route_table"
   for_each                 = var.route_table_configurations
   compartment_id           = lookup(module.compartment.compartments, each.value.compartment_key).id
   vcn_id                   = module.vcn[each.value.vcn_key].vcn_id
@@ -134,7 +134,7 @@ module "route_table" {
 
 ########################################## DRG ##########################################
 module "drg" {
-  source         = "/landing_zone/primary/drg/drg"
+  source         = "../drg/drg"
   for_each       = var.drg_configurations
   compartment_id = lookup(module.compartment.compartments, each.value.compartment_key).id
   display_name   = each.value.display_name
@@ -143,7 +143,7 @@ module "drg" {
 
 ########################################## DRG ATTACHMENT ##########################################
 module "drg_attachment" {
-  source                              = "/landing_zone/primary/drg/drg_attachment"
+  source                              = "../drg/drg_attachment"
   for_each                            = var.drg_attachment_configurations
   display_name                        = each.value.display_name
   drg_id                              = module.drg[each.value.drg_key].drg_id
@@ -155,7 +155,7 @@ module "drg_attachment" {
 
 ########################################## DRG ROUTE DISTRIBUTION ##########################################
 module "drg_route_distribution" {
-  source            = "/landing_zone/primary/drg/drg_route_distribution"
+  source            = "../drg/drg_route_distribution"
   for_each          = var.drg_route_distribution_configurations
   display_name      = each.value.display_name
   distribution_type = each.value.distribution_type
@@ -164,7 +164,7 @@ module "drg_route_distribution" {
 
 ################################## DRG ROUTE DISTRIBUTION STATEMENT ####################################
 module "drg_route_distribution_statement" {
-  source                    = "/landing_zone/primary/drg/drg_route_distribution_statement"
+  source                    = "../drg/drg_route_distribution_statement"
   for_each                  = var.drg_route_distribution_statement_configurations
   drg_route_distribution_id = module.drg_route_distribution[each.value.drg_route_distribution_key].drg_route_distribution_id
   action                    = each.value.action
@@ -176,7 +176,7 @@ module "drg_route_distribution_statement" {
 
 ################################## DRG ROUTE TABLE ##################################
 module "drg_route_table" {
-  source                    = "/landing_zone/primary/drg/drg_route_table"
+  source                    = "../drg/drg_route_table"
   for_each                  = var.drg_route_table_configurations
   display_name              = each.value.display_name
   drg_id                    = module.drg[each.value.drg_key].drg_id
@@ -186,7 +186,7 @@ module "drg_route_table" {
 ################################## VSS_Host_Scan_Recipe ##################################
 
 module "vss_host_scan_recipe" {
-  source                                                     = "/landing_zone/primary/vss/vss_host_scan_recipe"
+  source                                                     = "../vss/vss_host_scan_recipe"
   for_each                                                   = var.vss_host_scan_recipe_configurations
   agent_scan_level                                           = each.value.host_scan_recipe_agent_settings_scan_level
   host_scan_recipe_agent_settings_agent_configuration_vendor = each.value.host_scan_recipe_agent_settings_agent_configuration_vendor
@@ -198,7 +198,7 @@ module "vss_host_scan_recipe" {
 
 ################################## VSS_Host_Scan_target ##################################
 module "vss_host_scan_target" {
-  source                   = "/landing_zone/primary/vss/vss_host_scan_target"
+  source                   = "../vss/vss_host_scan_target"
   for_each                 = var.vss_host_scan_target_configurations
   compartment_id           = lookup(module.compartment.compartments, each.value.compartment_key).id
   test_host_scan_recipe_id = module.vss_host_scan_recipe[each.value.test_host_scan_recipe_key].test_host_scan_recipe_id
@@ -208,7 +208,7 @@ module "vss_host_scan_target" {
 ################################## IAM-User ##################################
 
 module "iam-user" {
-  source         = "/landing_zone/primary/iam/iam_user"
+  source         = "../iam/iam_user"
   for_each       = var.iam_user_configurations
   compartment_id = var.tenancy_ocid
   description    = each.value.description
@@ -220,7 +220,7 @@ module "iam-user" {
 ################################## IAM-Group ##################################
 
 module "iam-group" {
-  source         = "/landing_zone/primary/iam/iam_group"
+  source         = "../iam/iam_group"
   for_each       = var.iam_group_configurations
   compartment_id = var.tenancy_ocid
   description    = each.value.description
@@ -230,7 +230,7 @@ module "iam-group" {
 ################################## IAM-Policy_Statements ##################################
 
 module "iam-policy" {
-  source            = "/landing_zone/primary/iam/iam_policy"
+  source            = "../iam/iam_policy"
   for_each          = var.iam_policy_configurations
   compartment_id    = var.tenancy_ocid
   description       = each.value.description
@@ -241,7 +241,7 @@ module "iam-policy" {
 ################################## user_group_membership ##################################
 
 module "user_group_membership" {
-  source       = "/landing_zone/primary/iam/user_group_membership"
+  source       = "../iam/user_group_membership"
   for_each     = var.user_group_membership_configurations
   iam_group_id = module.iam-group[each.value.iam_group_key].iam_group_id
   iam_user_id  = module.iam-user[each.value.iam_user_key].iam_user_id
