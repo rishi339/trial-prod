@@ -6,7 +6,7 @@ terraform {
       version = "5.41.0" 
     }
   }
-  experiments = [module_variable_optional_attrs]
+  experiments = ["module_variable_optional_attrs"]
 }
 
 provider "oci" {
