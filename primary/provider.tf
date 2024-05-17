@@ -1,10 +1,12 @@
 terraform {
+  required_version = "< 1.3.0"
   required_providers {
     oci = {
       source  = "oracle/oci"
       version = "5.41.0" 
     }
   }
+  experiments = [module_variable_optional_attrs]
 }
 
 provider "oci" {
@@ -13,6 +15,6 @@ provider "oci" {
   user_ocid        = var.user_ocid
   fingerprint      = var.fingerprint
   private_key_path = var.private_key_path
-  region           = "us-ashburn-1"
+  region           = "var.primary_region"
 }
 
